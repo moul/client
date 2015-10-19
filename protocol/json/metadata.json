@@ -230,6 +230,9 @@
         "name" : "folderHandle",
         "type" : "bytes"
       }, {
+        "name" : "branchID",
+        "type" : "string"
+      }, {
         "name" : "unmerged",
         "type" : "boolean"
       }, {

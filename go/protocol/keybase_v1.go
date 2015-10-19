@@ -2658,6 +2658,7 @@ type PutMetadataArg struct {
 type GetMetadataArg struct {
 	FolderID      string            `codec:"folderID" json:"folderID"`
 	FolderHandle  []byte            `codec:"folderHandle" json:"folderHandle"`
+	BranchID      string            `codec:"branchID" json:"branchID"`
 	Unmerged      bool              `codec:"unmerged" json:"unmerged"`
 	StartRevision int64             `codec:"startRevision" json:"startRevision"`
 	StopRevision  int64             `codec:"stopRevision" json:"stopRevision"`

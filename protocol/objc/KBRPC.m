@@ -1073,7 +1073,7 @@
 }
 
 - (void)getMetadata:(KBRGetMetadataRequestParams *)params completion:(void (^)(NSError *error, KBRMetadataResponse *metadataResponse))completion {
-  NSDictionary *rparams = @{@"folderID": KBRValue(params.folderID), @"folderHandle": KBRValue(params.folderHandle), @"unmerged": @(params.unmerged), @"startRevision": @(params.startRevision), @"stopRevision": @(params.stopRevision), @"logTags": KBRValue(params.logTags)};
+  NSDictionary *rparams = @{@"folderID": KBRValue(params.folderID), @"folderHandle": KBRValue(params.folderHandle), @"branchID": KBRValue(params.branchID), @"unmerged": @(params.unmerged), @"startRevision": @(params.startRevision), @"stopRevision": @(params.stopRevision), @"logTags": KBRValue(params.logTags)};
   [self.client sendRequestWithMethod:@"keybase.1.metadata.getMetadata" params:rparams sessionId:self.sessionId completion:^(NSError *error, id retval) {
     if (error) {
       completion(error, nil);
@@ -1084,8 +1084,8 @@
   }];
 }
 
-- (void)getMetadataWithFolderID:(NSString *)folderID folderHandle:(NSData *)folderHandle unmerged:(BOOL)unmerged startRevision:(long)startRevision stopRevision:(long)stopRevision logTags:(KBRmap *)logTags completion:(void (^)(NSError *error, KBRMetadataResponse *metadataResponse))completion {
-  NSDictionary *rparams = @{@"folderID": KBRValue(folderID), @"folderHandle": KBRValue(folderHandle), @"unmerged": @(unmerged), @"startRevision": @(startRevision), @"stopRevision": @(stopRevision), @"logTags": KBRValue(logTags)};
+- (void)getMetadataWithFolderID:(NSString *)folderID folderHandle:(NSData *)folderHandle branchID:(NSString *)branchID unmerged:(BOOL)unmerged startRevision:(long)startRevision stopRevision:(long)stopRevision logTags:(KBRmap *)logTags completion:(void (^)(NSError *error, KBRMetadataResponse *metadataResponse))completion {
+  NSDictionary *rparams = @{@"folderID": KBRValue(folderID), @"folderHandle": KBRValue(folderHandle), @"branchID": KBRValue(branchID), @"unmerged": @(unmerged), @"startRevision": @(startRevision), @"stopRevision": @(stopRevision), @"logTags": KBRValue(logTags)};
   [self.client sendRequestWithMethod:@"keybase.1.metadata.getMetadata" params:rparams sessionId:self.sessionId completion:^(NSError *error, id retval) {
     if (error) {
       completion(error, nil);
@@ -3578,6 +3578,7 @@
   if ((self = [super initWithParams:params])) {
     self.folderID = params[0][@"folderID"];
     self.folderHandle = params[0][@"folderHandle"];
+    self.branchID = params[0][@"branchID"];
     self.unmerged = [params[0][@"unmerged"] boolValue];
     self.startRevision = [params[0][@"startRevision"] longValue];
     self.stopRevision = [params[0][@"stopRevision"] longValue];

@@ -892,6 +892,7 @@ typedef NS_ENUM (NSInteger, KBRPromptDefault) {
 @interface KBRGetMetadataRequestParams : KBRRequestParams
 @property NSString *folderID;
 @property NSData *folderHandle;
+@property NSString *branchID;
 @property BOOL unmerged;
 @property long startRevision;
 @property long stopRevision;
@@ -1631,7 +1632,7 @@ typedef NS_ENUM (NSInteger, KBRPromptDefault) {
 
 - (void)getMetadata:(KBRGetMetadataRequestParams *)params completion:(void (^)(NSError *error, KBRMetadataResponse *metadataResponse))completion;
 
-- (void)getMetadataWithFolderID:(NSString *)folderID folderHandle:(NSData *)folderHandle unmerged:(BOOL)unmerged startRevision:(long)startRevision stopRevision:(long)stopRevision logTags:(KBRmap *)logTags completion:(void (^)(NSError *error, KBRMetadataResponse *metadataResponse))completion;
+- (void)getMetadataWithFolderID:(NSString *)folderID folderHandle:(NSData *)folderHandle branchID:(NSString *)branchID unmerged:(BOOL)unmerged startRevision:(long)startRevision stopRevision:(long)stopRevision logTags:(KBRmap *)logTags completion:(void (^)(NSError *error, KBRMetadataResponse *metadataResponse))completion;
 
 - (void)registerForUpdates:(KBRRegisterForUpdatesRequestParams *)params completion:(void (^)(NSError *error))completion;
 

@@ -1139,9 +1139,6 @@ typedef NS_ENUM (NSInteger, KBRPromptDefault) {
 @interface KBRCurrentSessionRequestParams : KBRRequestParams
 @property NSInteger sessionID;
 @end
-@interface KBRCurrentUIDRequestParams : KBRRequestParams
-@property NSInteger sessionID;
-@end
 @interface KBRCheckUsernameAvailableRequestParams : KBRRequestParams
 @property NSInteger sessionID;
 @property NSString *username;
@@ -1982,8 +1979,6 @@ typedef NS_ENUM (NSInteger, KBRPromptDefault) {
 @interface KBRSessionRequest : KBRRequest
 
 - (void)currentSession:(void (^)(NSError *error, KBRSession *session))completion;
-
-- (void)currentUID:(void (^)(NSError *error, NSString *uID))completion;
 
 @end
 

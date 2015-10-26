@@ -4448,13 +4448,8 @@ type CurrentSessionArg struct {
 	SessionID int `codec:"sessionID" json:"sessionID"`
 }
 
-type CurrentUIDArg struct {
-	SessionID int `codec:"sessionID" json:"sessionID"`
-}
-
 type SessionInterface interface {
 	CurrentSession(context.Context, int) (Session, error)
-	CurrentUID(context.Context, int) (UID, error)
 }
 
 func SessionProtocol(i SessionInterface) rpc.Protocol {
@@ -4477,22 +4472,6 @@ func SessionProtocol(i SessionInterface) rpc.Protocol {
 				},
 				MethodType: rpc.MethodCall,
 			},
-			"currentUID": {
-				MakeArg: func() interface{} {
-					ret := make([]CurrentUIDArg, 1)
-					return &ret
-				},
-				Handler: func(ctx context.Context, args interface{}) (ret interface{}, err error) {
-					typedArgs, ok := args.(*[]CurrentUIDArg)
-					if !ok {
-						err = rpc.NewTypeError((*[]CurrentUIDArg)(nil), args)
-						return
-					}
-					ret, err = i.CurrentUID(ctx, (*typedArgs)[0].SessionID)
-					return
-				},
-				MethodType: rpc.MethodCall,
-			},
 		},
 	}
 }
@@ -4504,12 +4483,6 @@ type SessionClient struct {
 func (c SessionClient) CurrentSession(ctx context.Context, sessionID int) (res Session, err error) {
 	__arg := CurrentSessionArg{SessionID: sessionID}
 	err = c.Cli.Call(ctx, "keybase.1.session.currentSession", []interface{}{__arg}, &res)
-	return
-}
-
-func (c SessionClient) CurrentUID(ctx context.Context, sessionID int) (res UID, err error) {
-	__arg := CurrentUIDArg{SessionID: sessionID}
-	err = c.Cli.Call(ctx, "keybase.1.session.currentUID", []interface{}{__arg}, &res)
 	return
 }
 

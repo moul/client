@@ -10,7 +10,6 @@ import React, { Component, StyleSheet, Text, View, TextInput } from 'react-nativ
 import { codePageDeviceRoleExistingPhone, codePageDeviceRoleNewPhone,
          codePageDeviceRoleExistingComputer, codePageDeviceRoleNewComputer } from '../../../constants/login2'
 import { codePageModeScanCode, codePageModeShowCode, codePageModeEnterText, codePageModeShowText } from '../../../constants/login2'
-import { setCodePageMode, qrScanned, setCameraBrokenMode, textEntered, doneRegistering } from '../../../actions/login2'
 import QR from './qr'
 import Button from '../../../common-adapters/button'
 import commonStyles from '../../../styles/common'
@@ -20,7 +19,7 @@ export default class CodePage extends Component {
     super(props)
 
     this.state = {
-      enterText: null
+      enterText: ''
     }
   }
 
@@ -143,7 +142,9 @@ export default class CodePage extends Component {
         <TextInput value={this.state.enterText}
           style={[commonStyles.textInput, {height: 100, marginTop: 40}]}
           onChangeText={(enterText) => this.setState({enterText})}
+          autoCapitalize={'none'}
           placeholder='Type code here'
+          value={this.state.enterText}
           multiline />
         <Button style={{alignSelf: 'flex-end'}} title='Submit' action onPress={() => {
           this.props.textEntered(this.state.enterText)

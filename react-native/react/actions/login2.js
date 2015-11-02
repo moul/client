@@ -17,26 +17,28 @@ import { switchTab } from './tabbed-router'
 import { DEVICES_TAB } from '../constants/tabs'
 
 export function login (username, passphrase) {
-  return dispatch => {
+  return (dispatch, getState) => {
     dispatch({
       type: Constants.login
     })
 
-    const param = {
-      username,
-      passphrase,
-      storeSecret: true,
-      error: null
-    }
-
+    startLoginFlow(dispatch, getState, enums.provisionUi.ProvisionMethod.device, '', '', Constants.loginDone)
+  }
+    //const incomingMap = makeKex2IncomingMap()
+      /*
     const incomingMap = {
       'keybase.1.logUi.log': (param, response) => {
         console.log(param, response)
         response.result()
       }
     }
+    */
 
-    engine.rpc('login.loginWithPassphrase', param, incomingMap, (error, response) => {
+   /*
+
+
+    const deviceType = 'mobile'
+    engine.rpc('login.login', { username, deviceType }, incomingMap, (error, response) => {
       if (error) {
         console.log(error)
       }
@@ -48,6 +50,7 @@ export function login (username, passphrase) {
       })
     })
   }
+  */
 }
 
 export function doneRegistering () {
@@ -159,15 +162,16 @@ export function startCodeGen (mode) {
 export function setCodePageMode (mode) {
   return (dispatch, getState) => {
     const store = getState().login2.codePage
-    if (store.mode === mode) {
-      return // already in this mode
-    }
 
-    if (mode === Constants.codePageModeShowCode && !store.qrCode) {
+    if (mode === Constants.codePageModeShowCode && !store.qrCode && store.textCode) {
       dispatch({
         type: Constants.setQRCode,
         qrCode: qrGenerate(store.textCode)
       })
+    }
+
+    if (store.mode === mode) {
+      return // already in this mode
     }
 
     dispatch({
@@ -369,9 +373,11 @@ export function askForCodePage (cb) {
   return (dispatch) => {
     const props = {
       setCodePageMode: mode => dispatch(setCodePageMode(mode)),
-      qrScanned: code => dispatch(qrScanned(code)),
+      // qrScanned: code => dispatch(qrScanned(code)),
+      qrScanned: code => cb(code),
       setCameraBrokenMode: broken => dispatch(setCameraBrokenMode(broken)),
-      textEntered: text => dispatch(textEntered(text)),
+      // textEntered: text => dispatch(textEntered(text)),
+      textEntered: text => cb(text),
       doneRegistering: () => dispatch(doneRegistering())
     }
 
@@ -522,7 +528,12 @@ function makeKex2IncomingMap (dispatch, getState, provisionMethod, userPassTitle
         text: phrase
       })
 
-      dispatch(askForCodePage())
+      dispatch(askForCodePage(code => {
+        response.result(code)
+      }))
+    },
+    'keybase.1.provisionUi.DisplaySecretExchanged': (param, response) => {
+      response.result()
     }
   }
 }

@@ -10,8 +10,8 @@ export default class UserPass extends Component {
     super(props)
 
     this.state = {
-      username: props.username || '',
-      passphrase: props.passphrase || ''
+      username: props.username || 'test13',
+      passphrase: props.passphrase || 'okokokokokok'
     }
   }
 

@@ -241,7 +241,7 @@ export function submitForgotPassword () {
 
 export function autoLogin () {
   return dispatch => {
-    engine.rpc('login.loginWithPrompt', {}, {}, (error, status) => {
+    engine.rpc('login.login', {}, {}, (error, status) => {
       if (error) {
         console.log(error)
       } else {

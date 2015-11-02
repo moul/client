@@ -51,7 +51,6 @@ export function login (username, passphrase) {
 }
 
 export function doneRegistering () {
-  // resetCountdown()
   return {
     type: Constants.doneRegistering
   }
@@ -94,12 +93,6 @@ export function setCodePageOtherDeviceRole (otherDeviceRole) {
 }
 
 /*
-let timerId = null
-function resetCountdown () {
-  clearInterval(timerId)
-  timerId = null
-}
-
 // Count down until 0, then make a new code
 function startCodeGenCountdown (mode) {
   let countDown = Constants.countDownTime
@@ -125,9 +118,9 @@ function startCodeGenCountdown (mode) {
     })
   }
 }
-*/
 
-  /*
+*/
+/*
 export function startCodeGen (mode) {
   // TEMP this needs to come from go
   const code = 'TODO TEMP:' + Math.floor(Math.random() * 99999)
@@ -162,15 +155,20 @@ export function startCodeGen (mode) {
     }
   }
 }
-  */
-
+*/
 export function setCodePageMode (mode) {
   return (dispatch, getState) => {
-    if (getState().login2.codePage.mode === mode) {
+    const store = getState().login2.codePage
+    if (store.mode === mode) {
       return // already in this mode
     }
 
-    //dispatch(startCodeGen(mode))
+    if (mode === Constants.codePageModeShowCode && !store.qrCode) {
+      dispatch({
+        type: Constants.setQRCode,
+        qrCode: qrGenerate(store.textCode)
+      })
+    }
 
     dispatch({
       type: Constants.setCodeMode,
@@ -430,16 +428,52 @@ export function registerWithPaperKey () {
 }
 
 function startLoginFlow (dispatch, getState, provisionMethod, userPassTitle, userPassSubtitle, successType) {
-  const incomingMap = {
+  const mobile = true // TODO desktop also
+  const deviceType = mobile ? 'mobile' : 'desktop'
+  const incomingMap = makeKex2IncomingMap(dispatch, getState, provisionMethod, userPassTitle, userPassSubtitle, successType)
+
+  engine.rpc('login.login', {deviceType}, incomingMap, (error, response) => {
+    dispatch({
+      type: successType,
+      error: !!error,
+      payload: error || null
+    })
+
+    dispatch(navigateTo(['root']))
+    dispatch(switchTab(DEVICES_TAB))
+  })
+}
+
+export function addANewDevice () {
+  return (dispatch, getState) => {
+    const provisionMethod = enums.provisionUi.ProvisionMethod.device
+    const userPassTitle = 'Registering a new device requires your Keybase username and passphrase'
+    const userPassSubtitle = 'reggy lorem ipsum lorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsum'
+    const successType = null
+    const incomingMap = makeKex2IncomingMap(dispatch, getState, provisionMethod, userPassTitle, userPassSubtitle, successType)
+
+    engine.rpc('device.deviceAdd', {}, incomingMap, (error, response) => {
+      console.log(error)
+    })
+  }
+}
+
+function makeKex2IncomingMap (dispatch, getState, provisionMethod, userPassTitle, userPassSubtitle, successType) {
+  return {
     'keybase.1.provisionUi.chooseProvisioningMethod': (param, response) => {
       response.result(provisionMethod)
     },
     // TODO remove this when KEX2 supports not asking for this
     'keybase.1.loginUi.getEmailOrUsername': (param, response) => {
-      dispatch(askForUserPass(userPassTitle, userPassSubtitle, () => {
-        const { username } = getState().login2.userPass
+      const { username } = getState().login2.userPass
+      if (!username) {
+        dispatch(askForUserPass(userPassTitle, userPassSubtitle, () => {
+          const { username } = getState().login2.userPass
+          response.result(username)
+        }, true))
+      } else {
         response.result(username)
-      }, true))
+      }
     },
     'keybase.1.secretUi.getPaperKeyPassphrase': (param, response) => {
       dispatch(askForPaperKey((paperKey) => {
@@ -448,7 +482,14 @@ function startLoginFlow (dispatch, getState, provisionMethod, userPassTitle, use
     },
     'keybase.1.secretUi.getKeybasePassphrase': (param, response) => {
       const { passphrase } = getState().login2.userPass
-      response.result(passphrase)
+      if (!passphrase) {
+        dispatch(askForUserPass(userPassTitle, userPassSubtitle, () => {
+          const { passphrase } = getState().login2.userPass
+          response.result(passphrase)
+        }, true))
+      } else {
+        response.result(passphrase)
+      }
     },
     'keybase.1.provisionUi.PromptNewDeviceName': (param, response) => {
       const { existingDevices } = param
@@ -484,18 +525,5 @@ function startLoginFlow (dispatch, getState, provisionMethod, userPassTitle, use
       dispatch(askForCodePage())
     }
   }
-
-  const mobile = true // TODO desktop also
-  const deviceType = mobile ? 'mobile' : 'desktop'
-
-  engine.rpc('login.login', {deviceType}, incomingMap, (error, response) => {
-    dispatch({
-      type: successType,
-      error: !!error,
-      payload: error || null
-    })
-
-    dispatch(navigateTo(['root']))
-    dispatch(switchTab(DEVICES_TAB))
-  })
 }
+

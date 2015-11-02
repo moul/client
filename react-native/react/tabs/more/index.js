@@ -13,9 +13,6 @@ export default class More extends BaseComponent {
     super(props)
 
     this.menu = [
-      {name: 'Login', onClick: () => {
-        this.props.navigateTo(['login', 'loginform'])
-      }},
       {name: 'Login2', onClick: () => {
         this.props.navigateTo(['login2', {path: 'welcome', upLink: ['about'], upTitle: 'About'}])
       }},
@@ -66,7 +63,6 @@ export default class More extends BaseComponent {
         developer: require('./developer'),
         navDebug: require('../../debug/nav-debug'),
         bridging: require('../../debug/bridging-tabs'),
-        login: require('../../login'),
         login2: require('../../login2')
       }
     }

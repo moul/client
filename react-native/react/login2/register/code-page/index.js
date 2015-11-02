@@ -116,21 +116,10 @@ export default class CodePage extends Component {
     )
   }
 
-  countDownToTime () {
-    const mins = Math.floor(this.props.codeCountDown / 60)
-    const secs = this.props.codeCountDown - (mins * 60)
-    let secString = `${secs}`
-    if (secString.length < 2) {
-      secString = '0' + secString
-    }
-    return `${mins}:${secString}`
-  }
-
   renderText () {
     return (
       <View style={{flex: 1, backgroundColor: 'green', alignItems: 'center', justifyContent: 'center', padding: 20}}>
         <Text>Type this verification code into your other device</Text>
-        <Text style={{alignSelf: 'flex-end'}}>Code valid for {this.countDownToTime()}</Text>
         <Text style={{backgroundColor: 'grey', padding: 20, marginTop: 20}}>{this.props.textCode}</Text>
       </View>
     )
@@ -143,7 +132,6 @@ export default class CodePage extends Component {
         scanning={false}
         qrCode={this.props.qrCode}>
         <Text style={styles.text}>Scan this QR code with your other device</Text>
-        <Text style={{alignSelf: 'flex-end', marginRight: 40}}>Code valid for {this.countDownToTime()}</Text>
       </QR>
     )
   }
@@ -185,44 +173,12 @@ export default class CodePage extends Component {
       </View>
     )
   }
-
-  /*
-  static parseRoute (store, currentPath, nextPath) {
-    return {
-      componentAtTop: {
-        component: CodePage,
-        mapStateToProps: state => {
-          const {
-            mode, codeCountDown, textCode, qrCode,
-            myDeviceRole, otherDeviceRole, cameraBrokenMode } = state.login2.codePage
-          return {
-            mode,
-            codeCountDown,
-            textCode,
-            qrCode,
-            myDeviceRole,
-            otherDeviceRole,
-            cameraBrokenMode
-          }
-        },
-        props: {
-          setCodePageMode: mode => store.dispatch(setCodePageMode(mode)),
-          qrScanned: code => store.dispatch(qrScanned(code)),
-          setCameraBrokenMode: broken => store.dispatch(setCameraBrokenMode(broken)),
-          textEntered: text => store.dispatch(textEntered(text)),
-          doneRegistering: () => store.dispatch(doneRegistering())
-        }
-      }
-    }
-  }
-  */
 }
 
 const validRoles = [codePageDeviceRoleExistingPhone, codePageDeviceRoleNewPhone, codePageDeviceRoleExistingComputer, codePageDeviceRoleNewComputer]
 
 CodePage.propTypes = {
   mode: React.PropTypes.oneOf([codePageModeScanCode, codePageModeShowCode, codePageModeEnterText, codePageModeShowText]),
-  codeCountDown: React.PropTypes.number,
   textCode: React.PropTypes.string,
   qrCode: React.PropTypes.string,
   myDeviceRole: React.PropTypes.oneOf(validRoles),

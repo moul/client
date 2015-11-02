@@ -6,6 +6,7 @@ import Button from '../../common-adapters/button'
 import moment from 'moment'
 import CodePage from '../../login2/register/code-page'
 import { loadDevices } from '../../actions/devices'
+import { addANewDevice } from '../../actions/login2'
 import { routeAppend } from '../../actions/router'
 import commonStyles from '../../styles/common'
 import GenPaperKey from './gen-paper-key'
@@ -92,7 +93,7 @@ export default class Devices extends Component {
         props: {
           loadDevices: () => store.dispatch(loadDevices()),
           showRemoveDevicePage: device => store.dispatch(routeAppend({path: 'removeDevice', device})),
-          showExistingDevicePage: () => store.dispatch(routeAppend('regExistingDevice')),
+          showExistingDevicePage: () => store.dispatch(addANewDevice()),
           showGenPaperKeyPage: () => store.dispatch(routeAppend('genPaperKey'))
         }
       },

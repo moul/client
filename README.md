@@ -1,5 +1,7 @@
 ## Keybase
 
+[![GuardRails badge](https://badges.production.guardrails.io/moul/client.svg)](https://www.guardrails.io)
+
 Welcome to the Keybase client repo.  All our client apps (OSX, Windows, Linux, iOS, and Android) are being actively developed in this repository. Please, dig around.
 
 ### However, if all you want to do is run Keybase...
